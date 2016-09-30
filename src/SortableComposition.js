@@ -11,9 +11,18 @@ import React from 'react';
  * @returns {array}
  */
 export function swapArrayElements(items, indexFrom, indexTo) {
-  var item = items[indexTo];
-  items[indexTo] = items[indexFrom];
-  items[indexFrom] = item;
+  // Check to make sure index to is greater to push undefined elements
+  if (indexTo >= items.length) {
+    var k = indexTo - this.length;
+    while ((k--) + 1) {
+      items.push(undefined);
+    }
+  }
+
+  // splice array and maintain position of other items
+  items.splice(indexTo, 0, items.splice(indexFrom, 1)[0]);
+
+  // return new array
   return items;
 }
 
@@ -87,9 +96,9 @@ export function SortableComposition(Component) {
       var height, topOffset;
       var items = this.props.items;
       const overEl = e.currentTarget; //underlying element //TODO: not working for touch
-      const indexDragged = Number(overEl.dataset.id); //index of underlying element in the set DOM elements 
+      const indexDragged = Number(overEl.dataset.id); //index of underlying element in the set DOM elements
       const indexFrom = Number(this.state.draggingIndex);
-      
+
       height = overEl.getBoundingClientRect().height;
 
       if(e.type === "dragover"){
@@ -97,8 +106,8 @@ export function SortableComposition(Component) {
         positionY = e.clientY;
         topOffset = overEl.getBoundingClientRect().top;
       }
-    
-      if (e.type === "touchmove") { 
+
+      if (e.type === "touchmove") {
         positionX = e.touches[0].pageX;
         positionY = e.touches[0].pageY;
         if(updateEdge){
@@ -109,7 +118,7 @@ export function SortableComposition(Component) {
         //e.currentTarget.style.top = (positionY - elementEdge) + "px";
         topOffset = elementEdge;
       }
-      
+
       if (this.props.outline === "list") {
          //console.log('isMouseBeyond(positionY, topOffset, height)', positionY, topOffset, height, isMouseBeyond(positionY, topOffset, height))
           mouseBeyond = isMouseBeyond(positionY, topOffset, height)
@@ -155,4 +164,3 @@ export function SortableComposition(Component) {
 
   })
 }
-
